@@ -5,6 +5,9 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import spotData from '../data/spots.json'
 
+// 子コンポーネント
+import SpotPopup from '../components/SpotPopup'
+
 
 // MapContainer	地図全体を囲む「枠」	窓枠
 // TileLayer	実際に見える地図の絵（道路・地形など）	窓の外の景色
@@ -25,7 +28,10 @@ function MapView() {
         // 各配列データを<Marker>要素として1個ずつ返す
         // keyはreactの仕様だが、position=はreact-leaflet（Leaflet）側の仕様
         <Marker key={tomiSpot.id} position={[tomiSpot.lat, tomiSpot.lng]}>
-          <Popup>{tomiSpot.name}</Popup>
+          <Popup>
+            {/* Props（zawaSpot）としてオブジェクトごと子コンポーネントに渡す */}
+            <SpotPopup zawaSpot={tomiSpot} />
+           </Popup>
         </Marker>
       ))}
     </MapContainer>
