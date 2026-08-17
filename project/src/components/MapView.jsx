@@ -3,10 +3,11 @@
 // npm install react-leaflet leaflet
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-import spotData from '../data/spots.json'
+
 
 // 子コンポーネント
 import SpotPopup from '../components/SpotPopup'
+// import SpotList from '../components/SpotList'
 
 
 // MapContainer	地図全体を囲む「枠」	窓枠
@@ -14,7 +15,7 @@ import SpotPopup from '../components/SpotPopup'
 // Marker	特定の座標に立てる「ピン」	景色の中に貼る付箋
 // Popup	ピンをクリックしたときに出る吹き出し	付箋をめくると出てくるメモの中身
 
-function MapView() {
+function MapView({spot}) {
   return (
     <MapContainer center={[36.2048, 138.2529]} zoom={5} style={{ height: '100vh', width: '100%' }}>
       <TileLayer
@@ -22,9 +23,9 @@ function MapView() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
 
-      {/* mapメソッドでjson配列内の各要素を「変換して、新しい配列を作る」*/}
+      {/* mapメソッドで親コンポーネント経由で受け取ったspotデータ（json配列内）の各要素を「変換して、新しい配列を作る」*/}
       {/* (tomiSpot) => は仮の名前で配列内データを受け取るという意味 */}
-      {spotData.map((tomiSpot) => (
+      {spot.map((tomiSpot) => (
         // 各配列データを<Marker>要素として1個ずつ返す
         // keyはreactの仕様だが、position=はreact-leaflet（Leaflet）側の仕様
         <Marker key={tomiSpot.id} position={[tomiSpot.lat, tomiSpot.lng]}>
