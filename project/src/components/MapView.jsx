@@ -17,25 +17,27 @@ import SpotPopup from '../components/SpotPopup'
 
 function MapView({spot}) {
   return (
-    <MapContainer center={[36.2048, 138.2529]} zoom={5} style={{ height: '100vh', width: '100%' }}>
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
+    <div className="flex-1 h-full">
+      <MapContainer center={[36.2048, 138.2529]} zoom={5} style={{ height: '100%', width: '100%' }}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
 
-      {/* mapメソッドで親コンポーネント経由で受け取ったspotデータ（json配列内）の各要素を「変換して、新しい配列を作る」*/}
-      {/* (tomiSpot) => は仮の名前で配列内データを受け取るという意味 */}
-      {spot.map((tomiSpot) => (
-        // 各配列データを<Marker>要素として1個ずつ返す
-        // keyはreactの仕様だが、position=はreact-leaflet（Leaflet）側の仕様
-        <Marker key={tomiSpot.id} position={[tomiSpot.lat, tomiSpot.lng]}>
-          <Popup>
-            {/* Props（zawaSpot）としてオブジェクトごと子コンポーネントに渡す */}
-            <SpotPopup zawaSpot={tomiSpot} />
-           </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+        {/* mapメソッドで親コンポーネント経由で受け取ったspotデータ（json配列内）の各要素を「変換して、新しい配列を作る」*/}
+        {/* (tomiSpot) => は仮の名前で配列内データを受け取るという意味 */}
+        {spot.map((tomiSpot) => (
+          // 各配列データを<Marker>要素として1個ずつ返す
+          // keyはreactの仕様だが、position=はreact-leaflet（Leaflet）側の仕様
+          <Marker key={tomiSpot.id} position={[tomiSpot.lat, tomiSpot.lng]}>
+            <Popup>
+              {/* Props（zawaSpot）としてオブジェクトごと子コンポーネントに渡す */}
+              <SpotPopup zawaSpot={tomiSpot} />
+             </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
   )
 }
 
