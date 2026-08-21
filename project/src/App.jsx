@@ -7,11 +7,8 @@ import { useState } from 'react'
 function App() {
   //現在の値,値を更新するための関数=初期値
   // useState()は必ず「[現在の値, 更新関数]という2つだけの配列」を、この順番で返す
-  const[selectedSpotId,setSelectedId] = useState(null)
-  const[categoryFilter, setCategoryFilter] =useState('all')
-
-  // これだと初期値の「all」という文字列と一致した場合のみ表示される
-  // const filteredSpots = spotData.filter((s) => s.category === categoryFilter);
+  const[selectedSpotId, setSelectedId] = useState(null)
+  const[categoryFilter, setCategoryFilter] = useState('all')
 
   // categoryFilter（現在選ばれているカテゴリ）が "all" と一致するか、が条件
   // 一致する（true）→ 絞り込みなしで全件（spotData）
@@ -20,8 +17,8 @@ function App() {
   return (
     // 返せる戻り値は一つだけなのでdivで囲む
     <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
-      <SpotList spot={filteredSpots} categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter} selectedSpotId={selectedSpotId} onSelectSpot={setSelectedId}/>
-      <MapView spot={filteredSpots} selectedSpotId={selectedSpotId} />
+      <SpotList spots={filteredSpots} categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter} selectedSpotId={selectedSpotId} onSelectSpot={setSelectedId}/>
+      <MapView spots={filteredSpots} selectedSpotId={selectedSpotId} />
     </div>
   )
 }

@@ -1,19 +1,19 @@
-function SpotPopup ({zawaSpot}) {
+function SpotPopup ({spot}) {
     return(
         <div>
-            <h3>{zawaSpot.name}</h3>
-            <h3>{zawaSpot.category}</h3>
-            <h3>{zawaSpot.prefecture}</h3>
-            <h3>{zawaSpot.postalCode}</h3>
-            <h3>{zawaSpot.description}</h3>
-            <h3><img src={zawaSpot.image} alt={zawaSpot.name} className="w-full h-32 object-cover rounded" /></h3>
-            <h3>
-                {/* zawaSpot（propsで受け取ったオブジェクト）の中のtag配列をmap(受け皿名)で処理 */}
-                {zawaSpot.tags.map((OriginalNameTag) => (
-                    <span key={OriginalNameTag} className="mr-2 text-sm text-gray-500">#{OriginalNameTag}</span>
+            <h3>{spot.name}</h3>
+            <p>{spot.category}</p>
+            <p>{spot.prefecture}</p>
+            <p>{spot.postalCode}</p>
+            <p>{spot.description}</p>
+            <p><img src={spot.image} alt={spot.name} className="w-full h-32 object-cover rounded" /></p>
+            <p>
+                {/* spot（propsで受け取ったオブジェクト）の中のtag配列をmap(受け皿名)で処理 */}
+                {spot.tags.map((tag) => (
+                    <span key={tag} className="mr-2 text-sm text-gray-500">#{tag}</span>
                 ))}
-            </h3>
-            <h3>{zawaSpot.createdAt}</h3>
+            </p>
+            <p>{spot.createdAt}</p>
         </div>
 
     ) 
