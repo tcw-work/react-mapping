@@ -1,8 +1,15 @@
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 
+import type {Spot} from '../types' // src/types.tsにspotリストの型を定義
+
+interface MapFlyToProps {
+    spots: Spot[]        // Spotの配列
+    selectedSpotId: string | null        //初期値nullなので、on～でクリックされたらstringになる
+}
+
 // バケツリレーにより App→MapViewからpropsを受け取る
-function MapFlyTo({spots, selectedSpotId}) {
+function MapFlyTo({spots, selectedSpotId}: MapFlyToProps) {
     const map = useMap()
     // 「画面に表示する内容」ではなく「副作用（画面の外で起きる処理）」を実行するためのHook
     useEffect(() => {

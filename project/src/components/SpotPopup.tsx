@@ -1,4 +1,6 @@
-function SpotPopup ({spot}) {
+import type {Spot} from '../types' // src/types.tsにspotリストの型を定義
+
+function SpotPopup ({spot}: {spot: Spot}) {
     return(
         <div>
             <h3>{spot.name}</h3>

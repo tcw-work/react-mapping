@@ -3,17 +3,24 @@
 // npm install react-leaflet leaflet
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import MapFlyTo from "./MapFlyTo.jsx";
+import MapFlyTo from "./MapFlyTo"; //.tsxなどの拡張子は消す
 
 // 子コンポーネント
-import SpotPopup from "../components/SpotPopup";
+import SpotPopup from "./SpotPopup";
+
+import type {Spot} from '../types' // src/types.tsにspotリストの型を定義
+
+interface MapViewProps {
+  spots: Spot []
+  selectedSpotId: string | null
+}
 
 // MapContainer	地図全体を囲む「枠」	窓枠
 // TileLayer	実際に見える地図の絵（道路・地形など）	窓の外の景色
 // Marker	特定の座標に立てる「ピン」	景色の中に貼る付箋
 // Popup	ピンをクリックしたときに出る吹き出し	付箋をめくると出てくるメモの中身
 
-function MapView({ spots, selectedSpotId }) {
+function MapView({ spots, selectedSpotId }: MapViewProps) {
   return (
     <div className="flex-1 h-full">
       <MapContainer
