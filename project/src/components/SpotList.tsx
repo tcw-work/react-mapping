@@ -51,9 +51,9 @@ function SpotList({
         onChange={(e) => setPrefectureFilter(e.target.value)}
       >
         <option value="all">都道府県</option>
-        <option value="島根県">島根県</option>
-        <option value="長野県">長野県</option>
-        <option value="滋賀県">滋賀県</option>
+        <option value="島根">島根</option>
+        <option value="長野">長野</option>
+        <option value="滋賀">滋賀</option>
       </select>
 
       <ul className="divide-y divide-gray-100">
