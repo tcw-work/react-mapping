@@ -51,7 +51,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     }
     getInitialSession()
 
-    // ログイン・アウトで状態が変化するたびに処理を実行
+    // ログイン・アウトで状態が変化（成功）するたびに処理を実行
     // onAuthStateChange（supabase由来の関数）は{ data: { subscription } }という形で、登録した監視員そのものを返してくれる
     // ここではdataという名前を、分かりやすいようにlistenerFreeNameという別名に変えて受け取っている
     // onAuthStateChangeは「1番目の引数にイベントの種類、2番目の引数に現在のセッション」で、event・sessionという名前自体は自由
@@ -68,12 +68,47 @@ function AuthProvider({ children }: AuthProviderProps) {
     // []（空）→ 最初の1回だけ実行
   }, [])
 
+// 本来は const {data, error} = ... という「data・error 両方入った形」で返ってくる
+// dataには成功時のセッション情報が入るが、userの更新（結果）はonAuthStateChangeがstate自動でやってくれるため
+// ここではdataを受け取らず（無視して）、errorだけを取り出している。
+// errorがnullの場合 → ログイン処理成功 → onAuthStateChangeの自動検知でstate更新（受け取った{error}で中身があればerror処理に進む）
+  async function login(email:string, password: string) {
+    const {error} = await supabase.auth.signInWithPassword({email, password})
+    if (error) {
+        // ユーザーに伝えたいのでthrowで返す
+        throw error
+    }
+  }
+  async function logout() {
+    const {error} = await supabase.auth.signOut()
+        if (error) {
+        // ログアウト失敗をユーザーに詳しく伝える必要性は低いためconsoleエラー時で実行
+        console.error(error)
+    }
+  }
+
   return (
     // createContextでContextを作ると、Reactが自動的にセットで用意してくれる、専用の「配達員」コンポーネントです
     // これで囲まれた範囲の中でだけ、useContext(AuthContext)で値を読み取れるようになる
     // value = 実際に配る中身（AuthContextType）
-    <AuthContext.Provider value={/* まだ未定 */}>
+    // 今回定義した関数をオブジェクトで一まとめにする（emailなどの引数はこれを渡したコンポーネントから貰ってくる）
+    <AuthContext.Provider value={{user, login, logout}}>
       {children}
     </AuthContext.Provider>
   );
 }
+
+// 他のコンポーネントが簡単に呼び出せる、読み取り専用の関数を追加
+function useAuth() {
+
+    // 最初に作ったAuthContext（入れ物）の、今の中身
+    const context = useContext(AuthContext)
+
+    // <AuthProvider> で囲まれていない場所でuseAuth()が呼ばれたら
+    if (context === undefined ) {
+        throw new Error('useAuthはAuthProviderの中で使ってください')
+    }
+    return context
+}
+// 2つを、他のファイルからimportできるようにする
+export { AuthProvider, useAuth }
