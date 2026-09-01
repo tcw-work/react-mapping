@@ -44,10 +44,10 @@ function SpotForm ({addSpot}:SpotFormProps) {
                     type="text"
                     className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
                     value={spotSubmit.name}
-                    // スプレッド構文 ...spotSubmitは、「spotSubmitが今持っている全プロパティを、そのままここに展開する。
-                    // その中のnameというプロパティだけを、
-                    // 今入力された新しい値（.value）に差し替えて、
-                    // それをsetSpotSubmit（更新関数）で新しいstateとして設定する
+                    // ...spotSubmit：全プロパティを展開
+                    // email: e.target.value：その中のemailだけを新しい値に差し替える（ここまでで「新しいオブジェクト」が完成）
+                    // setSpotSubmitt(...)：その新しいオブジェクトを、新しいstateとして設定する
+                    // （結果として）spotSubmitの状態が書き換わり、再レンダリングされる
                     onChange={(e) => setSpotSubmit({ ...spotSubmit, name: e.target.value })}
                 />
             </div>

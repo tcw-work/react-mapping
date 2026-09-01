@@ -1,14 +1,13 @@
 import MapView from './components/MapView'
 import SpotList from './components/SpotList'
 import SpotForm from './components/SpotForm'
+import LoginForm from './components/LoginForm'
+import AuthStatus from './components/AuthStatus'
 
 // import spotData from './data/spots.json'
 // usestate、useEffect
 import { useState } from 'react'
-
 import useSpots from './hooks/useSpots'
-
-import { createContext } from 'react'
 
 
 
@@ -54,6 +53,8 @@ function App() {
   return (
     // 返せる戻り値は一つだけなのでdivで囲む
     <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
+      <AuthStatus />
+      <LoginForm />
       <SpotList spots={filteredSpots} categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter} prefectureFilter={prefectureFilter}  setPrefectureFilter={setPrefectureFilter} selectedSpotId={selectedSpotId} onSelectSpot={setSelectedId}/>
       <MapView spots={filteredSpots} selectedSpotId={selectedSpotId} />
       <SpotForm addSpot={addSpot}/>

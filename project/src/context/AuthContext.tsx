@@ -1,6 +1,9 @@
 // AuthContext.tsxは、ログインフォームそのものでなく、ここで作っているのは、
 // 「ログイン状態を管理して、アプリ全体に配るための土台（インフラ部分）」
 
+//今まではAPPが親で子コンポーネントを定義していたが、
+// useContextとchildrenを使ってそのAppのさらに親を定義するイメージね
+
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 // supabaseですでに定義済みのUser型
@@ -27,7 +30,7 @@ interface AuthProviderProps {
 }
 // この後下記のような形になる
 // <AuthProvider>
-//     <App />
+//     <App />　このオブジェクト情報がchildrenとして入る
 // </AuthProvider>
 
 // Reactによって自動的にchildrenという名前のpropsとして、AuthProvider関数の中に渡される
@@ -36,6 +39,7 @@ interface AuthProviderProps {
 
 // userのstateを実際に持ち、
 // Supabaseと通信してlogin・logoutの中身を実装する、エンジン部分
+// childrenはmain.tsxで設定した<App />（{ type: App, props: {} }のようなオブジェクト情報）が入る
 function AuthProvider({ children }: AuthProviderProps) {
   // ログイン中ユーザーのstate情報
   const [user, setUser] = useState<User | null>(null);
