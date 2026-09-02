@@ -1,18 +1,14 @@
+// スポット新規登録フォーム。入力値をaddSpot経由でSupabaseに送信する
 import { useState } from 'react'
-// 型リスト読み込み
 import type { SpotWithoutElm } from '../types'
 
-// Appから受け取とるprops（addSpot）の型付け（設計図）
 interface SpotFormProps {
     addSpot: (spotDataFreeName:SpotWithoutElm) => void
 }
 
-// addSpotを分割代入して型付け（設計図通りか確認）
 function SpotForm ({addSpot}:SpotFormProps) {
-    
-    // フォームの値State（初期値にはオブジェクトが入るので{}で定義）
+
     const[spotSubmit, setSpotSubmit] = useState<SpotWithoutElm>({
-        // 下記がspotSubmitの初期値（現在の値）とした入る
         name: '',
         category: '',
         prefecture: '',
@@ -25,14 +21,12 @@ function SpotForm ({addSpot}:SpotFormProps) {
     })
 
     return (
-        // フォーム作成（枠のみ。value・onChange・onSubmitはこれから自分で結びつける）
         <form
             className="p-4 space-y-4 border-t border-gray-200 bg-white"
                     onSubmit={(e) => {
-                    //HTML由来の送信時のリロード禁止
+                    // ブラウザ標準の送信時リロードを止める
                     e.preventDefault()
-                    // valueにセットされた「spotSubmit」の値を引数としてセット
-                    // App経由でuseSpots.tsのaddSpot (SpotWithoutEleFreeNam:SpotWithoutElm)でDBに送られる
+                    // App経由でuseSpots.tsのaddSpotを呼び、DBへ送信
                     addSpot(spotSubmit)
                 }}
             >
@@ -44,10 +38,6 @@ function SpotForm ({addSpot}:SpotFormProps) {
                     type="text"
                     className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
                     value={spotSubmit.name}
-                    // ...spotSubmit：全プロパティを展開
-                    // email: e.target.value：その中のemailだけを新しい値に差し替える（ここまでで「新しいオブジェクト」が完成）
-                    // setSpotSubmitt(...)：その新しいオブジェクトを、新しいstateとして設定する
-                    // （結果として）spotSubmitの状態が書き換わり、再レンダリングされる
                     onChange={(e) => setSpotSubmit({ ...spotSubmit, name: e.target.value })}
                 />
             </div>
@@ -96,7 +86,7 @@ function SpotForm ({addSpot}:SpotFormProps) {
                         type="number"
                         className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
                         value={spotSubmit.lat}
-                        // stringが帰ってくるので、Numberで帰ってくる文字列を数字に変換
+                        // e.target.valueはstring型なのでNumberに変換
                         onChange={(e) => setSpotSubmit({...spotSubmit, lat: Number(e.target.value)})}
                     />
                 </div>
@@ -126,8 +116,9 @@ function SpotForm ({addSpot}:SpotFormProps) {
                 <input
                     type="text"
                     className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+                    // tagsはstring[]だが、input value={配列}は自動でカンマ区切り文字列として表示される
                     value={spotSubmit.tags}
-                    // タグをカンマ区切りで1つの入力欄にまとめて打ってもらうために、カンマで文字列を分割
+                    // 入力（カンマ区切りの1文字列）をtags: string[]に戻すため分割
                     onChange={(e) => setSpotSubmit({...spotSubmit, tags: e.target.value.split(",")})}
                 />
             </div>
