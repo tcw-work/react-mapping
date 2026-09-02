@@ -1,9 +1,7 @@
-// react-leafletというライブラリが用意してくれている部品から使うものを入れ込む
-// 最初にインストールしたサードパーティ製の部品集（streetmap付随のものではない）。その接続先としてstreetmapを選んでいる
-// npm install react-leaflet leaflet
+// 地図本体。spotsの配列をピンとしてレンダリングする
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import MapFlyTo from "./MapFlyTo"; //.tsxなどの拡張子は消す
+import MapFlyTo from "./MapFlyTo";
 
 // Leafletのデフォルトピン画像は相対パス参照のため、Viteの本番ビルドでは404になる
 // 画像を明示的にimportしてURLを解決させ、デフォルトアイコンの参照先を上書きする（react-leaflet利用時の定番の回避策）
@@ -19,20 +17,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-// 子コンポーネント
 import SpotPopup from "./SpotPopup";
-
-import type {Spot} from '../types' // src/types.tsにspotリストの型を定義
+// Spotはsrc/types.tsで定義したこのアプリ独自の型
+import type {Spot} from '../types'
 
 interface MapViewProps {
   spots: Spot []
   selectedSpotId: string | null
 }
-
-// MapContainer	地図全体を囲む「枠」	窓枠
-// TileLayer	実際に見える地図の絵（道路・地形など）	窓の外の景色
-// Marker	特定の座標に立てる「ピン」	景色の中に貼る付箋
-// Popup	ピンをクリックしたときに出る吹き出し	付箋をめくると出てくるメモの中身
 
 function MapView({ spots, selectedSpotId }: MapViewProps) {
   return (
@@ -47,17 +39,11 @@ function MapView({ spots, selectedSpotId }: MapViewProps) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        {/* この中でuseMapによるサイドバークリック時の動きを定義 */}
         <MapFlyTo spots={spots} selectedSpotId={selectedSpotId} />
 
-        {/* mapメソッドで親コンポーネント経由で受け取ったspotデータ（json配列内）の各要素を「変換して、新しい配列を作る」*/}
-        {/* (spots) => は仮の名前で配列内データを受け取るという意味 */}
         {spots.map((spot) => (
-          // 各配列データを<Marker>要素として1個ずつ返す
-          // keyはreactの仕様だが、position=はreact-leaflet（Leaflet）側の仕様
           <Marker key={spot.id} position={[spot.lat, spot.lng]}>
             <Popup>
-              {/* Props（spot）としてオブジェクトごと子コンポーネントに渡す */}
               <SpotPopup spot={spot} />
             </Popup>
           </Marker>

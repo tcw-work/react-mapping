@@ -1,27 +1,17 @@
-interface Spot {
-  id: string;
-  name: string;
-  category: string;
-  prefecture: string;
-  postalCode: string;
-  lat: number;
-  lng: number;
-  description: string;
-  tags: string[];
-  image: string;
-  createdAt: string;
-}
+// スポット一覧表示＋カテゴリ・都道府県フィルタのコントロール
+// Spotはsrc/types.tsで定義したこのアプリ独自の型
+import type { Spot } from '../types'
+
 interface SpotListToProps {
   spots: Spot[];
   selectedSpotId: string | null;
-  onSelectSpot: (idFreeNam: string) => void; //関数なのでそれ用の型。IDを一つ受け取り、voidは戻り値を返さない（useStateはその使い方を想定していない）という意味
+  onSelectSpot: (idFreeNam: string) => void;
   categoryFilter: string;
-  setCategoryFilter: (categoryFreeName: string) => void; //useStateの関数
+  setCategoryFilter: (categoryFreeName: string) => void;
   prefectureFilter: string
   setPrefectureFilter: (prefectureFreeName: string) => void
 }
 
-// propsを分割代入
 function SpotList({
   spots,
   selectedSpotId,
@@ -58,7 +48,7 @@ function SpotList({
 
       <ul className="divide-y divide-gray-100">
         {spots.map((spot) => (
-          // クリックしたらApp.jsxから渡された**setSelectedId（useStateの更新関数）を実行
+          // クリックしたらApp.tsxから渡されたsetSelectedId（useStateの更新関数）を実行
           <li
             key={spot.id}
             onClick={() => onSelectSpot(spot.id)}
