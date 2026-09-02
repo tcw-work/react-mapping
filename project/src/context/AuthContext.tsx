@@ -30,7 +30,7 @@ interface AuthProviderProps {
 }
 // この後下記のような形になる
 // <AuthProvider>
-//     <App />　このオブジェクト情報がchildrenとして入る
+//     <App /> このオブジェクト情報がchildrenとして入る
 // </AuthProvider>
 
 // Reactによって自動的にchildrenという名前のpropsとして、AuthProvider関数の中に渡される
@@ -114,5 +114,11 @@ function useAuth() {
     }
     return context
 }
-// 2つを、他のファイルからimportできるようにする
-export { AuthProvider, useAuth }
+
+// CIでGithub側でエラーが出るためdisabledを使ってこのexportの一行だけ除外
+// eslint-disable-next-line react-refresh/only-export-components
+export { AuthProvider, useAuth } // 2つを、他のファイルからimportできるようにする
+
+// 上記のGit Actions上でのエラー内容
+// 1つのファイルから「部品(コンポーネント)」と「ただの関数」を両方exportすると、保存時の自動リロードが不安定になる可能性があるという警告
+// 本番ビルドには影響はでないが、構造変える必要が出るため除外
