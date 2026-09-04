@@ -2,8 +2,9 @@ export interface Spot {
     id: string
     name: string
     category: string
-    prefecture: string
+    area: string
     postalCode: string
+    address: string
     lat: number
     lng: number
     description: string

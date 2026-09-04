@@ -5,8 +5,9 @@ function SpotPopup ({spot}: {spot: Spot}) {
         <div>
             <h3>{spot.name}</h3>
             <p>{spot.category}</p>
-            <p>{spot.prefecture}</p>
+            <p>{spot.area}</p>
             <p>{spot.postalCode}</p>
+            <p>{spot.address}</p>
             <p>{spot.description}</p>
             <p><img src={spot.image} alt={spot.name} className="w-full h-32 object-cover rounded" /></p>
             <p>
