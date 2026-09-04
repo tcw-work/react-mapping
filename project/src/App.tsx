@@ -10,14 +10,14 @@ import useSpots from './hooks/useSpots'
 function App() {
   const[selectedSpotId, setSelectedId] = useState<string | null>(null)
   const[categoryFilter, setCategoryFilter] = useState<string>('all')
-  const[prefectureFilter, setPrefectureFilter] = useState<string>('all')
+  const[areaFilter, setAreaFilter] = useState<string>('all')
 
   const { spotData, loading, fetchError, addSpot } = useSpots()
 
   const filteredSpots = spotData.filter((s) => {
     const matchesCategory = categoryFilter === 'all' || s.category === categoryFilter
-    const matchesPrefecture = prefectureFilter === 'all' || s.prefecture === prefectureFilter
-    return matchesCategory && matchesPrefecture
+    const matchesArea = areaFilter === 'all' || s.area === areaFilter
+    return matchesCategory && matchesArea
   })
 
   if (loading) {
@@ -33,7 +33,7 @@ function App() {
         <div className='mb-4'>
           <AuthStatus />
           <LoginForm />
-          <SpotList spots={filteredSpots} categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter} prefectureFilter={prefectureFilter}  setPrefectureFilter={setPrefectureFilter} selectedSpotId={selectedSpotId} onSelectSpot={setSelectedId}/>
+          <SpotList spots={filteredSpots} categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter} areaFilter={areaFilter}  setAreaFilter={setAreaFilter} selectedSpotId={selectedSpotId} onSelectSpot={setSelectedId}/>
           <SpotForm addSpot={addSpot}/>
         </div>
       </div>

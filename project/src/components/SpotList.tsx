@@ -9,8 +9,8 @@ interface SpotListToProps {
   onSelectSpot: (idFreeNam: string) => void;
   categoryFilter: string;
   setCategoryFilter: (categoryFreeName: string) => void;
-  prefectureFilter: string;
-  setPrefectureFilter: (prefectureFreeName: string) => void;
+  areaFilter: string;
+  setAreaFilter: (areaFreeName: string) => void;
 }
 
 function SpotList({
@@ -19,8 +19,8 @@ function SpotList({
   onSelectSpot,
   categoryFilter,
   setCategoryFilter,
-  prefectureFilter,
-  setPrefectureFilter,
+  areaFilter,
+  setAreaFilter,
 }: SpotListToProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,18 +51,20 @@ function SpotList({
             onChange={(e) => setCategoryFilter(e.target.value)}
           >
             <option value="all">すべて</option>
-            <option value="洞窟">洞窟</option>
-            <option value="遺跡">遺跡</option>
+            <option value="自重">自重</option>
+            <option value="持久力">持久力</option>
+            <option value="フィジカル">フィジカル</option>
           </select>
 
           <select
-            value={prefectureFilter}
-            onChange={(e) => setPrefectureFilter(e.target.value)}
+            value={areaFilter}
+            onChange={(e) => setAreaFilter(e.target.value)}
           >
-            <option value="all">都道府県</option>
-            <option value="島根">島根</option>
-            <option value="長野">長野</option>
-            <option value="滋賀">滋賀</option>
+            <option value="all">エリア</option>
+            <option value="初台">初台</option>
+            <option value="幡ヶ谷">幡ヶ谷</option>
+            <option value="笹塚">笹塚</option>
+            <option value="その他近隣">その他近隣</option>
           </select>
 
           <ul className="divide-y divide-gray-100">
@@ -79,7 +81,7 @@ function SpotList({
               >
                 <p className="font-medium text-gray-900">{spot.name}</p>
                 <p className="text-xs text-gray-500">
-                  {spot.category}・{spot.prefecture}
+                  {spot.category}・{spot.area}
                 </p>
               </li>
             ))}

@@ -30,7 +30,19 @@ function useSpots() {
 
   // DBへインサート
   async function addSpot (SpotWithoutEleFreeNam:SpotWithoutElm) {
-    const { data, error } = await supabase.from("spots").insert(SpotWithoutEleFreeNam).select("*")
+
+
+    // insert時のスコープ対策（letで再代入可能に）
+    let spotDataEx = SpotWithoutEleFreeNam
+
+    // 画像選択されていない場合はスポレッド構文でno-imageに置換
+    if(SpotWithoutEleFreeNam.image === '') {
+
+      // const spotDataEx = ～～にするとifスコープの外で使えなくなる（既存変数の再代入で済ます）
+      spotDataEx = {...SpotWithoutEleFreeNam, image: 'images/no-image.jpg'}
+    }
+
+    const { data, error } = await supabase.from("spots").insert(spotDataEx).select("*")
     if (error) {
         console.error(error)
         return

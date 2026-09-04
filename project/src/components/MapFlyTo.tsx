@@ -19,7 +19,7 @@ function MapFlyTo({spots, selectedSpotId}: MapFlyToProps) {
         const target = spots.find((s) => s.id ===selectedSpotId)
         if(target) {
             // map.flyTo(座標, ズーム)マップで操作（Leafletライブラリのメソッド）
-            map.flyTo([target.lat, target.lng],10)
+            map.flyTo([target.lat, target.lng],18)
         }
         // 「配列を第2引数として渡す」というReact側の決まった形（配列内のどれかの値が変わるたびに実行→今回はmap）
     }, [selectedSpotId, spots, map])

@@ -30,8 +30,8 @@ function MapView({ spots, selectedSpotId }: MapViewProps) {
   return (
     <div className="flex-1 h-full">
       <MapContainer
-        center={[36.2048, 138.2529]}
-        zoom={5}
+        center={[35.678, 139.68]}
+        zoom={10}
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer

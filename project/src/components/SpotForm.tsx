@@ -10,8 +10,9 @@ function SpotForm({ addSpot }: SpotFormProps) {
   const [spotSubmit, setSpotSubmit] = useState<SpotWithoutElm>({
     name: "",
     category: "",
-    prefecture: "",
+    area: "",
     postalCode: "",
+    address: "",
     lat: 0,
     lng: 0,
     description: "",
@@ -29,6 +30,8 @@ function SpotForm({ addSpot }: SpotFormProps) {
         e.preventDefault();
         // App経由でuseSpots.tsのaddSpotを呼び、DBへ送信
         addSpot(spotSubmit);
+        // 登録後にセクションを閉じる
+        setIsOpen(false)
       }}
     >
       <h2
@@ -37,14 +40,18 @@ function SpotForm({ addSpot }: SpotFormProps) {
       >
         スポット新規登録
         <svg
-            // 文字列の中に変数を混ぜたいのでテンプレートリテラル(バッククォート`)と{}で囲む形に変更
-            className={`w-4 h-4 ${!isOpen ? 'rotate-0' : 'rotate-180'}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-            >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          // 文字列の中に変数を混ぜたいのでテンプレートリテラル(バッククォート`)と{}で囲む形に変更
+          className={`w-4 h-4 ${!isOpen ? "rotate-0" : "rotate-180"}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
       </h2>
       {/* 左がturethyなら右を評価して返す  */}
@@ -77,26 +84,28 @@ function SpotForm({ addSpot }: SpotFormProps) {
               }
             >
               <option value="">選択してください</option>
-              <option value="洞窟">洞窟</option>
-              <option value="遺跡">遺跡</option>
+              <option value="自重">自重</option>
+              <option value="持久力">持久力</option>
+              <option value="フィジカル">フィジカル</option>
             </select>
           </div>
 
           <div>
             <label className="block text-xs font-medium text-gray-700 mb-1">
-              都道府県
+              エリア
             </label>
             <select
               className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-              value={spotSubmit.prefecture}
+              value={spotSubmit.area}
               onChange={(e) =>
-                setSpotSubmit({ ...spotSubmit, prefecture: e.target.value })
+                setSpotSubmit({ ...spotSubmit, area: e.target.value })
               }
             >
               <option value="">選択してください</option>
-              <option value="島根">島根</option>
-              <option value="長野">長野</option>
-              <option value="滋賀">滋賀</option>
+              <option value="初台">初台</option>
+              <option value="幡ヶ谷">幡ヶ谷</option>
+              <option value="笹塚">笹塚</option>
+              <option value="その他近隣">その他近隣</option>
             </select>
           </div>
 
@@ -110,6 +119,20 @@ function SpotForm({ addSpot }: SpotFormProps) {
               value={spotSubmit.postalCode}
               onChange={(e) =>
                 setSpotSubmit({ ...spotSubmit, postalCode: e.target.value })
+              }
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              住所
+            </label>
+            <input
+              type="text"
+              className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+              value={spotSubmit.address}
+              onChange={(e) =>
+                setSpotSubmit({ ...spotSubmit, address: e.target.value })
               }
             />
           </div>
