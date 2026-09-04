@@ -29,11 +29,15 @@ function App() {
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
-      <AuthStatus />
-      <LoginForm />
-      <SpotList spots={filteredSpots} categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter} prefectureFilter={prefectureFilter}  setPrefectureFilter={setPrefectureFilter} selectedSpotId={selectedSpotId} onSelectSpot={setSelectedId}/>
+      <div className='block'>
+        <div className='mb-4'>
+          <AuthStatus />
+          <LoginForm />
+          <SpotList spots={filteredSpots} categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter} prefectureFilter={prefectureFilter}  setPrefectureFilter={setPrefectureFilter} selectedSpotId={selectedSpotId} onSelectSpot={setSelectedId}/>
+          <SpotForm addSpot={addSpot}/>
+        </div>
+      </div>
       <MapView spots={filteredSpots} selectedSpotId={selectedSpotId} />
-      <SpotForm addSpot={addSpot}/>
     </div>
   )
 }
