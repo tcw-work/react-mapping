@@ -2,12 +2,22 @@
 import { useState } from "react";
 import type { SpotWithoutElm } from "../types";
 
+// 受け取ったpropsの型付け
 interface SpotFormProps {
+
   addSpot: (spotDataFreeName: SpotWithoutElm) => void;
+
+  // interfaceの中ではstateに初期値セットできない
+  isOpen: boolean
+
+  // 関数としてセットする場合
+  setIsOpen: (value: boolean) => void;
 }
 
-function SpotForm({ addSpot }: SpotFormProps) {
-  const [spotSubmit, setSpotSubmit] = useState<SpotWithoutElm>({
+function SpotForm({ addSpot, isOpen, setIsOpen }: SpotFormProps) {
+
+  // フォームを初期値
+  const initialSpotSubmit = {
     name: "",
     category: "",
     area: "",
@@ -18,9 +28,15 @@ function SpotForm({ addSpot }: SpotFormProps) {
     description: "",
     tags: [],
     image: "",
-  });
+  };
 
-  const [isOpen, setIsOpen] = useState(false);
+  // 初回レンダリング時のみ引数initialSpotSubmitの中身が、spotSubmitの最初の値としてReact内部に保存（二回目は保存済みの値）
+  const [spotSubmit, setSpotSubmit] = useState<SpotWithoutElm>(initialSpotSubmit);
+
+  // リセット：stateを初期値オブジェクトに差し替え
+  function resetForm() {
+    setSpotSubmit(initialSpotSubmit)
+  }
 
   return (
     <form
@@ -31,7 +47,7 @@ function SpotForm({ addSpot }: SpotFormProps) {
         // App経由でuseSpots.tsのaddSpotを呼び、DBへ送信
         addSpot(spotSubmit);
         // 登録後にセクションを閉じる
-        setIsOpen(false)
+        setIsOpen(false);
       }}
     >
       <h2
@@ -213,6 +229,13 @@ function SpotForm({ addSpot }: SpotFormProps) {
               }
             />
           </div>
+
+          <button
+            type="button"
+            onClick={resetForm}
+          >
+            リセットする
+          </button>
 
           <button
             type="submit"
