@@ -24,9 +24,11 @@ import type {Spot} from '../types'
 interface MapViewProps {
   spots: Spot []
   selectedSpotId: string | null
+  // 関数の型として型付け
+  selectedMapPin: (idFreeNam: string) => void;
 }
 
-function MapView({ spots, selectedSpotId }: MapViewProps) {
+function MapView({ spots, selectedSpotId, selectedMapPin }: MapViewProps) {
   return (
     <div className="flex-1 h-full">
       <MapContainer
@@ -39,10 +41,20 @@ function MapView({ spots, selectedSpotId }: MapViewProps) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
 
-        <MapFlyTo spots={spots} selectedSpotId={selectedSpotId} />
+        <MapFlyTo spots={spots} selectedSpotId={selectedSpotId}/>
 
         {spots.map((spot) => (
-          <Marker key={spot.id} position={[spot.lat, spot.lng]}>
+          <Marker
+            key={spot.id}
+            position={[spot.lat, spot.lng]}
+            // eventHandlers = pinはMakerそのものなので、react-leaflet提供の専用propで処理が必要
+            eventHandlers={{
+              // selectedMapPin = setSelectedIdとしてAppから受け取ってる
+              // App.tsx側のselectedSpotIdstateが更新される → 再レンダリングされ、新しいselectedSpotIdがMapView・MapFlyToに渡り直し処理が再開
+              click: () => selectedMapPin(spot.id)
+            }}
+          
+          >
             <Popup>
               <SpotPopup spot={spot} />
             </Popup>

@@ -11,6 +11,10 @@ interface SpotListToProps {
   setCategoryFilter: (categoryFreeName: string) => void;
   areaFilter: string;
   setAreaFilter: (areaFreeName: string) => void;
+  // interfaceの中ではstateに初期値セットできない
+  isOpen: boolean
+  // 関数としてセットする場合
+  setIsOpen: (value: boolean) => void;
 }
 
 function SpotList({
@@ -21,11 +25,14 @@ function SpotList({
   setCategoryFilter,
   areaFilter,
   setAreaFilter,
+  isOpen,
+  setIsOpen,
 }: SpotListToProps) {
-  const [isOpen, setIsOpen] = useState(false);
+
+  // const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="w-full md:w-72 h-48 md:h-full overflow-y-auto border-b md:border-b-0 md:border-r border-gray-200 bg-white shrink-0">
+    <div className={`w-full md:w-72 md:h-full overflow-y-auto border-b md:border-b-0 md:border-r border-gray-200 bg-white shrink-0 ${isOpen ? "h-48" : "h-auto"}`}>
       <h2
         className="sticky top-0 bg-white px-4 py-3 text-sm font-semibold text-gray-500 border-b border-gray-200 flex items-center justify-between cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}

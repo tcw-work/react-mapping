@@ -20,6 +20,11 @@ function App() {
     return matchesCategory && matchesArea
   })
 
+  // 各サイドバーセクション処理
+  // const [isOpen, setIsOpen] = useState(false);
+  const [openSection, setOpenSection] = useState<string | null>(null);
+
+  // 読み込み処理
   if (loading) {
     return <div>読み込み中</div>
   }
@@ -32,12 +37,46 @@ function App() {
       <div className='block'>
         <div className='mb-4'>
           <AuthStatus />
-          <LoginForm />
-          <SpotList spots={filteredSpots} categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter} areaFilter={areaFilter}  setAreaFilter={setAreaFilter} selectedSpotId={selectedSpotId} onSelectSpot={setSelectedId}/>
-          <SpotForm addSpot={addSpot}/>
+          <LoginForm
+            isOpen={openSection === "loginFreeName"}
+            setIsOpen={(ClickResultFreeName:boolean) =>
+            ClickResultFreeName ? setOpenSection("loginFreeName") : setOpenSection(null)
+             }
+          />
+
+          {/* 渡された引数によってopenSectionはform、list、nullのどれかになって更新される（stateに二つのセクションが同時に入るのを防ぐ */}
+          {/* setIsOpenは("formFreeName")という形で関数の実行を行っているので毎回実行されてしまう（他のpropsは単なるデータの受け渡し） */}
+          {/* setIsOpen=の中をアロー関数でラップ（コールバック）することで他のレンダリング時も「関数という名の箱」が1つ作られるだけで実行はされない */}
+          {/* これやらないとsetOpenSection("listFreeName")が実行され、openSectionのstateの中身が更新されるという副作用が起きる */}
+          <SpotList
+            spots={filteredSpots}
+            categoryFilter={categoryFilter}
+            setCategoryFilter={setCategoryFilter}
+            areaFilter={areaFilter} 
+            setAreaFilter={setAreaFilter}
+            selectedSpotId={selectedSpotId}
+            onSelectSpot={setSelectedId}
+            // 渡された引数によってopenSectionはform、list、nullのどれかになって更新される（stateに二つのセクションが同時に入るのを防ぐ
+            // setIsOpenは("formFreeName")という形で関数の実行を行っているので毎回実行されてしまう（他のpropsは単なるデータの受け渡し）
+            // setIsOpen=の中をアロー関数でラップ（コールバック）することで他のレンダリング時も「関数という名の箱」が1つ作られるだけで実行はされない
+            // これやらないとsetOpenSection("listFreeName")が実行され、openSectionのstateの中身が更新されるという副作用が起きる
+            isOpen={openSection === "listFreeName"}
+            // 「setIsOpen=」は子コンポーネント側ではsetIsOpen(true)などになる
+            // 子コンポーネント側のsetIsOpen(!isOpen)処理を行い、そのままApp.tsx側の関数が持つ引数ClickResultが値を受け取る
+            setIsOpen={(ClickResultFreeName:boolean) =>
+              ClickResultFreeName ?setOpenSection("listFreeName") : setOpenSection(null)
+            }
+          />
+          <SpotForm
+            addSpot={addSpot}
+            isOpen={openSection === "formFreeName"}
+            setIsOpen={(ClickResultFreeName:boolean) =>
+              ClickResultFreeName ? setOpenSection("formFreeName") : setOpenSection(null)
+            }
+          />
         </div>
       </div>
-      <MapView spots={filteredSpots} selectedSpotId={selectedSpotId} />
+      <MapView spots={filteredSpots} selectedSpotId={selectedSpotId} selectedMapPin={setSelectedId}/>
     </div>
   )
 }

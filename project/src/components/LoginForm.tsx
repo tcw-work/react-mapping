@@ -4,7 +4,20 @@ import { useAuth } from "../context/AuthContext";
 // FormEventはReact組み込みの「フォーム送信イベント」の型
 import type { FormEvent } from "react";
 
-function LoginForm() {
+
+// 受け取ったpropsの型付け（サイドバー開閉）
+interface LoginFormProps {
+
+  // interfaceの中ではstateに初期値セットできない
+  isOpen: boolean
+
+  // 関数としてセットする場合
+  setIsOpen: (value: boolean) => void;
+}
+
+
+function LoginForm({isOpen, setIsOpen}: LoginFormProps) {
+
   const { login, user } = useAuth();
   // 変数名をloginにするとuseAuth()のlogin関数と衝突するため避ける
   const [loginInput, setLoginInput] = useState({
@@ -12,7 +25,6 @@ function LoginForm() {
     password: "",
   });
 
-  const [isOpen, setIsOpen] = useState(false);
 
   if (user) {
     return null;
