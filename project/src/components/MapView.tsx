@@ -21,14 +21,18 @@ import SpotPopup from "./SpotPopup";
 // Spotはsrc/types.tsで定義したこのアプリ独自の型
 import type {Spot} from '../types'
 
+import type { User } from "@supabase/supabase-js";
+
 interface MapViewProps {
   spots: Spot []
   selectedSpotId: string | null
   // 関数の型として型付け
   selectedMapPin: (idFreeNam: string) => void;
+  user: User | null
+  onEditSpot: (spot: Spot) => void
 }
 
-function MapView({ spots, selectedSpotId, selectedMapPin }: MapViewProps) {
+function MapView({ spots, selectedSpotId, selectedMapPin, user, onEditSpot }: MapViewProps) {
   return (
     <div className="flex-1 h-full">
       <MapContainer
@@ -56,7 +60,7 @@ function MapView({ spots, selectedSpotId, selectedMapPin }: MapViewProps) {
           
           >
             <Popup>
-              <SpotPopup spot={spot} />
+              <SpotPopup spot={spot} user={user} onEditSpot={onEditSpot}/>
             </Popup>
           </Marker>
         ))}

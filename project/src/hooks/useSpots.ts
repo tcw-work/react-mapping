@@ -5,6 +5,7 @@ import {supabase} from '../lib/supabaseClient'
 // Spot・SpotWithoutElmはsrc/types.tsで定義したこのアプリ独自の型
 import type { Spot } from '../types'
 import type { SpotWithoutElm } from '../types'
+import { useAuth } from '../context/AuthContext'
 
 function useSpots() {
   const[spotData, setspotData] = useState<Spot[]>([])
@@ -28,18 +29,27 @@ function useSpots() {
     fetchSpots()
   }, []) // 依存配列が空 → マウント時に1回だけ実行
 
-  // DBへインサート
+  // edit用ユーザー識別
+  const {user} = useAuth()
+
+  // DBインサート用関数
   async function addSpot (SpotWithoutEleFreeNam:SpotWithoutElm) {
 
+    // insert時のスコープ対策（letで再代入可能にし、created_byも持てるように）
+    let spotDataEx: SpotWithoutElm & { created_by?: string | null } = SpotWithoutEleFreeNam
 
-    // insert時のスコープ対策（letで再代入可能に）
-    let spotDataEx = SpotWithoutEleFreeNam
+
+    // 新規登録（Create）時に「誰が投稿したか」を記録（Exにマージ）
+    if (user) {
+      // オプショナルチェイニング
+      spotDataEx = {...spotDataEx, created_by: user?.id ?? null}
+    }
 
     // 画像選択されていない場合はスポレッド構文でno-imageに置換
     if(SpotWithoutEleFreeNam.image === '') {
 
       // const spotDataEx = ～～にするとifスコープの外で使えなくなる（既存変数の再代入で済ます）
-      spotDataEx = {...SpotWithoutEleFreeNam, image: 'images/no-image.jpg'}
+      spotDataEx = {...spotDataEx, image: 'images/no-image.jpg'}
     }
 
     const { data, error } = await supabase.from("spots").insert(spotDataEx).select("*")
@@ -50,7 +60,40 @@ function useSpots() {
     setspotData([...spotData, ...data])
   }
 
-  return { spotData, loading, fetchError, addSpot }
+  // DBアップデート用関数（IDで何のレコード化を識別）
+  async function updateSpot (id:string, SpotWithoutEleFreeNam:SpotWithoutElm) {
+    
+    // 再代入されることがないのでconst指定
+    const spotDataEx = SpotWithoutEleFreeNam
+
+    // .eq("id",id) 左："id"という指定列、左：その列と比較する値（引数として受け取った変数）= 必ず一つの結果として帰ってくる
+    // select("*")は更新対象の行（idが一致した行）の「全カラム」という意味
+    const { data, error } = await supabase.from("spots").update(spotDataEx).select("*").eq("id",id)
+
+    if (error) {
+      console.error (error)
+      return
+    }
+
+
+    // setSpotData()で関数実行してその中でdataを取得したdata[0]に指定
+    setspotData(
+      // mapで、新しい配列を組み立ててreturnで返す
+      spotData.map((s) => {
+      // 投稿ID
+      const originalId = s.id
+      // supabaseは必ず結果を配列で返してくるのでヒット（このケースだと必ず一つ）なので[0]のid
+      const updateId = data[0].id
+      // 投稿IDと更新したIDが一致するか処理（一致していればdata[0]を返す）
+      // return data[0] として1件のSpotデータ（オブジェクト）がそのまま返却される
+      return originalId === updateId ? data[0] : s
+      })
+    )
+
+  }
+
+  return { spotData, loading, fetchError, addSpot, updateSpot }
+
 }
 
 export default useSpots

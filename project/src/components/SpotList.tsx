@@ -1,6 +1,5 @@
 // スポット一覧表示＋カテゴリ・都道府県フィルタのコントロール
 // Spotはsrc/types.tsで定義したこのアプリ独自の型
-import { useState } from "react";
 import type { Spot } from "../types";
 
 interface SpotListToProps {
@@ -32,7 +31,7 @@ function SpotList({
   // const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className={`w-full md:w-72 md:h-full overflow-y-auto border-b md:border-b-0 md:border-r border-gray-200 bg-white shrink-0 ${isOpen ? "h-48" : "h-auto"}`}>
+    <div className={`w-full md:w-72 overflow-y-auto border-b md:border-b-0 md:border-r border-gray-200 bg-white shrink-0 ${isOpen ? "h-48 md:h-auto md:max-h-[50vh]" : "h-auto"}`}>
       <h2
         className="sticky top-0 bg-white px-4 py-3 text-sm font-semibold text-gray-500 border-b border-gray-200 flex items-center justify-between cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
@@ -55,6 +54,7 @@ function SpotList({
           <select
             className="px-4 py-3"
             value={categoryFilter}
+            // e = イベントオブジェクト（react由来だが自由命名）、target = イベントが発生したDOM要素
             onChange={(e) => setCategoryFilter(e.target.value)}
           >
             <option value="all">すべて</option>

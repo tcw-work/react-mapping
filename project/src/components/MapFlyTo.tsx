@@ -16,7 +16,10 @@ function MapFlyTo({spots, selectedSpotId}: MapFlyToProps) {
         if (!selectedSpotId) return
         // .find()は「条件に合う最初の1件だけ」を返す
         // (s)は「配列の中身を1つずつ、仮にsという名前で受け取る」という、自由に決めた引数名
-        const target = spots.find((s) => s.id ===selectedSpotId)
+        // s.id === selectedSpotId はカテゴリーフィルター（spots）から、実際に必要なデータ（座標）を持ったオブジェクトを引き当てる鍵渡し
+        const target = spots.find((s) => s.id === selectedSpotId)
+
+        // あれば処理（なければなのもしない）
         if(target) {
 
             const zoom = 18

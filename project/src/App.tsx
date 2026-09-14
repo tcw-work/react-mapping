@@ -6,14 +6,21 @@ import LoginForm from './components/LoginForm'
 import AuthStatus from './components/AuthStatus'
 import { useState } from 'react'
 import useSpots from './hooks/useSpots'
+import type { Spot } from "./types";
+import { useAuth } from './context/AuthContext'
 
 function App() {
   const[selectedSpotId, setSelectedId] = useState<string | null>(null)
   const[categoryFilter, setCategoryFilter] = useState<string>('all')
   const[areaFilter, setAreaFilter] = useState<string>('all')
 
-  const { spotData, loading, fetchError, addSpot } = useSpots()
+  // 編集用state
+  const[editingSpot, seteditingSpot] = useState<Spot | null>(null)
 
+  const { spotData, loading, fetchError, addSpot, updateSpot } = useSpots()
+  const { user } = useAuth()
+
+  // 絞り込みフィルターはAppに直書きのため、別の箇所のstateが変わっても更新される
   const filteredSpots = spotData.filter((s) => {
     const matchesCategory = categoryFilter === 'all' || s.category === categoryFilter
     const matchesArea = areaFilter === 'all' || s.area === areaFilter
@@ -23,6 +30,14 @@ function App() {
   // 各サイドバーセクション処理
   // const [isOpen, setIsOpen] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
+
+  
+  // 編集用関数
+  function startEditing(spot: Spot) {
+    seteditingSpot(spot) //編集対象を記憶
+    setOpenSection("formFreeName") //フォームを開く
+  }
+
 
   // 読み込み処理
   if (loading) {
@@ -68,15 +83,27 @@ function App() {
             }
           />
           <SpotForm
+            // keyの値が変わると、Reactはそれを「別コンポーネント」とみなし、古いSpotFormインスタンスを破棄して、新しいSpotFormインスタンスを最初から作り直す
+            // keyに関しては再レンダリングではなく作り直し（マウントし直し）
+            key={editingSpot?.id ?? "new"}
             addSpot={addSpot}
             isOpen={openSection === "formFreeName"}
             setIsOpen={(ClickResultFreeName:boolean) =>
               ClickResultFreeName ? setOpenSection("formFreeName") : setOpenSection(null)
             }
+            editingSpot={editingSpot}
+            updateSpot={updateSpot}
+
           />
         </div>
       </div>
-      <MapView spots={filteredSpots} selectedSpotId={selectedSpotId} selectedMapPin={setSelectedId}/>
+      <MapView
+        spots={filteredSpots}
+        selectedSpotId={selectedSpotId}
+        selectedMapPin={setSelectedId}
+        user={user}
+        onEditSpot={startEditing}
+      />
     </div>
   )
 }
