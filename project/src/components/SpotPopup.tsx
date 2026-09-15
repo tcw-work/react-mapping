@@ -1,6 +1,21 @@
 import type {Spot} from '../types' // src/types.tsにspotリストの型を定義
 
-function SpotPopup ({spot}: {spot: Spot}) {
+
+import type { User } from "@supabase/supabase-js";
+import { MASTER_ACCOUNT_ID } from "../constants";
+
+interface SpotPopupProps {
+  spot: Spot
+  user: User | null
+  onEditSpot: (spot: Spot) => void
+  onDeleteSpot: (id: string) => void
+}
+
+function SpotPopup ({ spot, user, onEditSpot, onDeleteSpot }: SpotPopupProps) {
+
+    // ログイン中のユーザーIDが、投稿者のIDと一致する、または、マスターアカウントのIDと一致する
+    const canEdit = user?.id === spot.created_by || user?.id === MASTER_ACCOUNT_ID
+
     return(
         <div>
             <h3>{spot.name}</h3>
@@ -17,6 +32,31 @@ function SpotPopup ({spot}: {spot: Spot}) {
                 ))}
             </p>
             <p>{spot.createdAt}</p>
+            {canEdit && (
+                // 1つの式（( )の中）から返せるのはルート要素1つだけなので、フラグメントで囲む
+                 <>
+                    <button
+                        type="button"
+                        onClick={() => onEditSpot(spot)}
+                        className="mt-2 w-full bg-gray-600 text-white text-sm font-medium rounded py-1.5 hover:bg-gray-700"
+                    >
+                        編集する
+                    </button>
+
+                    <button
+                        type="button"
+                        // ifは処理のため前後に{}でくくっておく
+                        onClick={() => {
+                            if (window.confirm("本当に削除してもいいですか？")) {
+                                onDeleteSpot(spot.id)
+                            }
+                        }}
+                        className="mt-2 w-full bg-gray-600 text-white text-sm font-medium rounded py-1.5 hover:bg-gray-700"
+                    >
+                        削除する
+                    </button>
+                </>
+            )}
         </div>
 
     ) 

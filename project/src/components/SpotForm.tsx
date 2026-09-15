@@ -1,6 +1,7 @@
 // スポット新規登録フォーム。入力値をaddSpot経由でSupabaseに送信する
 import { useState } from "react";
-import type { SpotWithoutElm } from "../types";
+import type { Spot, SpotWithoutElm } from "../types";
+
 
 // 受け取ったpropsの型付け
 interface SpotFormProps {
@@ -12,9 +13,16 @@ interface SpotFormProps {
 
   // 関数としてセットする場合
   setIsOpen: (value: boolean) => void;
+
+  // useSpot.tsで定義
+  updateSpot: (id: string, spotDataFreeName: SpotWithoutElm) => void;
+
+  // 今、どのスポットを編集中かという情報（Spotオブジェクトの時＝編集モード、null = 新規登録）
+  editingSpot: Spot | null;
+
 }
 
-function SpotForm({ addSpot, isOpen, setIsOpen }: SpotFormProps) {
+function SpotForm({ addSpot, isOpen, setIsOpen, updateSpot, editingSpot }: SpotFormProps) {
 
   // フォームを初期値
   const initialSpotSubmit = {
@@ -30,8 +38,10 @@ function SpotForm({ addSpot, isOpen, setIsOpen }: SpotFormProps) {
     image: "",
   };
 
-  // 初回レンダリング時のみ引数initialSpotSubmitの中身が、spotSubmitの最初の値としてReact内部に保存（二回目は保存済みの値）
-  const [spotSubmit, setSpotSubmit] = useState<SpotWithoutElm>(initialSpotSubmit);
+  // 編集対象があればその内容、なければ空の初期値をそのまま最初の値にする
+  // （App.tsx側でkey={editingSpot?.id ?? "new"}を付けているため、
+  //   編集対象が切り替わるたびにSpotForm自体が作り直され、ここが再評価される）
+  const [spotSubmit, setSpotSubmit] = useState<SpotWithoutElm>(editingSpot ?? initialSpotSubmit);
 
   // リセット：stateを初期値オブジェクトに差し替え
   function resetForm() {
@@ -40,21 +50,26 @@ function SpotForm({ addSpot, isOpen, setIsOpen }: SpotFormProps) {
 
   return (
     <form
-      className="w-full md:w-72 p-4 space-y-4 border-t border-gray-200 bg-white border-gray-200"
+      className="w-full md:w-72 p-4 space-y-4 border-t border-gray-200 bg-white overflow-y-auto max-h-[70vh]"
       onSubmit={(e) => {
-        // ブラウザ標準の送信時リロードを止める
+        // ブラウザ標準の送信時リロードを止める（メモリ上のStateがすべて消えるため必須）
         e.preventDefault();
-        // App経由でuseSpots.tsのaddSpotを呼び、DBへ送信
-        addSpot(spotSubmit);
+        // App経由でuseSpots.tsのaddSpot or updateSpot を呼び、DBへ送信
+        if (editingSpot) {
+          updateSpot(editingSpot.id, spotSubmit)
+        } else {
+          addSpot(spotSubmit)
+        }
+
         // 登録後にセクションを閉じる
         setIsOpen(false);
       }}
     >
       <h2
-        className="text-sm font-semibold text-gray-500 border-b border-gray-200 pb-3 flex items-center justify-between cursor-pointer"
+        className="sticky top-0 bg-white text-sm font-semibold text-gray-500 border-b border-gray-200 pb-3 flex items-center justify-between cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        スポット新規登録
+        {editingSpot ? "スポット編集" : "スポット新規登録"}
         <svg
           // 文字列の中に変数を混ぜたいのでテンプレートリテラル(バッククォート`)と{}で囲む形に変更
           className={`w-4 h-4 ${!isOpen ? "rotate-0" : "rotate-180"}`}
@@ -241,7 +256,7 @@ function SpotForm({ addSpot, isOpen, setIsOpen }: SpotFormProps) {
             type="submit"
             className="w-full bg-blue-600 text-white text-sm font-medium rounded py-2 hover:bg-blue-700"
           >
-            登録する
+            {editingSpot ? "更新する" : "登録する"}
           </button>
         </>
       )}

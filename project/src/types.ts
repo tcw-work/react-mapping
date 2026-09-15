@@ -11,7 +11,8 @@ export interface Spot {
     tags: string[]
     image: string
     createdAt: string
+    created_by: string | null
 }
 
 // Omitで除外したい型を宣言（DBで生成された値を使うため）
-export type SpotWithoutElm = Omit<Spot, "id" | "createdAt">;
+export type SpotWithoutElm = Omit<Spot, "id" | "createdAt" | "created_by">;
