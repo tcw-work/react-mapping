@@ -8,9 +8,10 @@ interface SpotPopupProps {
   spot: Spot
   user: User | null
   onEditSpot: (spot: Spot) => void
+  onDeleteSpot: (id: string) => void
 }
 
-function SpotPopup ({ spot, user, onEditSpot }: SpotPopupProps) {
+function SpotPopup ({ spot, user, onEditSpot, onDeleteSpot }: SpotPopupProps) {
 
     // ログイン中のユーザーIDが、投稿者のIDと一致する、または、マスターアカウントのIDと一致する
     const canEdit = user?.id === spot.created_by || user?.id === MASTER_ACCOUNT_ID
@@ -32,13 +33,29 @@ function SpotPopup ({ spot, user, onEditSpot }: SpotPopupProps) {
             </p>
             <p>{spot.createdAt}</p>
             {canEdit && (
-                <button
-                    type="button"
-                    onClick={() => onEditSpot(spot)}
-                    className="mt-2 w-full bg-gray-600 text-white text-sm font-medium rounded py-1.5 hover:bg-gray-700"
-                >
-                    編集する
-                </button>
+                // 1つの式（( )の中）から返せるのはルート要素1つだけなので、フラグメントで囲む
+                 <>
+                    <button
+                        type="button"
+                        onClick={() => onEditSpot(spot)}
+                        className="mt-2 w-full bg-gray-600 text-white text-sm font-medium rounded py-1.5 hover:bg-gray-700"
+                    >
+                        編集する
+                    </button>
+
+                    <button
+                        type="button"
+                        // ifは処理のため前後に{}でくくっておく
+                        onClick={() => {
+                            if (window.confirm("本当に削除してもいいですか？")) {
+                                onDeleteSpot(spot.id)
+                            }
+                        }}
+                        className="mt-2 w-full bg-gray-600 text-white text-sm font-medium rounded py-1.5 hover:bg-gray-700"
+                    >
+                        削除する
+                    </button>
+                </>
             )}
         </div>
 

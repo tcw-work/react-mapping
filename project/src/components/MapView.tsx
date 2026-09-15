@@ -30,9 +30,10 @@ interface MapViewProps {
   selectedMapPin: (idFreeNam: string) => void;
   user: User | null
   onEditSpot: (spot: Spot) => void
+  onDeleteSpot: (id: string) => void
 }
 
-function MapView({ spots, selectedSpotId, selectedMapPin, user, onEditSpot }: MapViewProps) {
+function MapView({ spots, selectedSpotId, selectedMapPin, user, onEditSpot, onDeleteSpot }: MapViewProps) {
   return (
     <div className="flex-1 h-full">
       <MapContainer
@@ -60,7 +61,7 @@ function MapView({ spots, selectedSpotId, selectedMapPin, user, onEditSpot }: Ma
           
           >
             <Popup>
-              <SpotPopup spot={spot} user={user} onEditSpot={onEditSpot}/>
+              <SpotPopup spot={spot} user={user} onEditSpot={onEditSpot} onDeleteSpot={onDeleteSpot}/>
             </Popup>
           </Marker>
         ))}

@@ -92,7 +92,26 @@ function useSpots() {
 
   }
 
-  return { spotData, loading, fetchError, addSpot, updateSpot }
+  // 投稿削除
+  async function deleteSpot (id:string) {
+    // 削除対象を特定するのに必要なidを引数で持っているので、dataやselectによるカラム取得は不要
+    const { error } = await supabase.from("spots").delete().eq("id",id)
+
+    if (error) {
+        console.error(error)
+        return
+    }
+
+    setspotData(
+      // 削除対象のidと一致しない要素だけを残す
+      // filterがreturnするのはtrue/falseだけ。「この要素を新しい配列に残すかどうか」というYes/Noの判定に使う
+      // {}を使わずに単一処理で終わる場合は、returnは不要（自動的に結果が戻り値になる省略記法）
+      spotData.filter((s) => s.id !== id)
+    )
+
+  }
+
+  return { spotData, loading, fetchError, addSpot, updateSpot, deleteSpot }
 
 }
 

@@ -29,14 +29,14 @@ describe('SpotPopup', () => {
     it('名前が表示される', () => {
 
         // コンポーネントを仮想的なDOM(画面)として描画
-        render(<SpotPopup spot={makeSpotFreeName} user={null} onEditSpot={() => {}} />)
+        render(<SpotPopup spot={makeSpotFreeName} user={null} onEditSpot={() => {}} onDeleteSpot={() => {}}/>)
 
         //except = これから検証するという宣言・screen = 仮想画面（結果）から要素を探す窓口 ・ getByText = テキストを探す ・toBeInTheDocument = 渡された要素が、実際に画面(DOM)の中に存在しているか」を確認
         expect(screen.getByText( makeSpotFreeName.name )).toBeInTheDocument()
     })
 
         it('カテゴリーが表示される', () => {
-        render(<SpotPopup spot={makeSpotFreeName} user={null} onEditSpot={() => {}} />)
+        render(<SpotPopup spot={makeSpotFreeName} user={null} onEditSpot={() => {}} onDeleteSpot={() => {}} />)
         expect(screen.getByText( makeSpotFreeName.category )).toBeInTheDocument()
     })
 })

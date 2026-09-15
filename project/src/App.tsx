@@ -17,7 +17,7 @@ function App() {
   // 編集用state
   const[editingSpot, seteditingSpot] = useState<Spot | null>(null)
 
-  const { spotData, loading, fetchError, addSpot, updateSpot } = useSpots()
+  const { spotData, loading, fetchError, addSpot, updateSpot, deleteSpot } = useSpots()
   const { user } = useAuth()
 
   // 絞り込みフィルターはAppに直書きのため、別の箇所のstateが変わっても更新される
@@ -103,6 +103,7 @@ function App() {
         selectedMapPin={setSelectedId}
         user={user}
         onEditSpot={startEditing}
+        onDeleteSpot={deleteSpot}
       />
     </div>
   )
