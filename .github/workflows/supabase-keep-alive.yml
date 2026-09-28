@@ -1,0 +1,19 @@
+name: Supabase Keep-Alive
+
+# 無料プランのSupabaseは、DBへのアクセスが7日間ないと自動で一時停止する。
+# それより短い間隔で軽いクエリを送り続け、一時停止を防ぐ。
+on:
+  schedule:
+    - cron: '0 0 * * 1,4' # 毎週月曜・木曜 0:00 UTC（最大でも3〜4日おき）
+  workflow_dispatch: # GitHub上の「Run workflow」ボタンから手動実行もできるようにする
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send a lightweight query to Supabase
+        run: |
+          curl -s -o /dev/null -w "status: %{http_code}\n" \
+            "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/spots?select=id&limit=1" \
+            -H "apikey: ${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_ANON_KEY }}"
